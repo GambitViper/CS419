@@ -64,17 +64,17 @@ training_set = []
 
 def pick_random_idx(set_size):
     idx = random.randint(0, set_size - 1)
-    # print(f"...Choosing from size: {set_size}")
-    # print(f"...{idx}")
+    print(f"...Choosing from size: {set_size}")
+    print(f"...{idx}")
     return idx
 
 for x in range(t_size):
     idx = pick_random_idx(len(testing_set))
     training_set.append(testing_set[idx])
-    # print(f"...Adding {testing_set[idx]} to Training_Set")
+    print(f"...Adding {testing_set[idx]} to Training_Set")
     testing_set.pop(idx)
-    # print(f"...Removing {training_set[x]} from Testing_Set")
-    # print(f"{training_set[x].debug_data()}\n...")
+    print(f"...Removing {training_set[x]} from Testing_Set")
+    print(f"{training_set[x].debug_data()}\n...")
 
 print(f"Data_Set len: {len(data_set)}")
 print(f"Traing_Set len: {len(training_set)}")

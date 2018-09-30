@@ -24,6 +24,7 @@ class Mushroom:
         self.population = arr[20]
         self.habitat = arr[21]
         self.isEdible = arr[22]
+        self.asArray = arr
 
     def debug_data(self):
         string = ("\n ~~~~~Mushroom~~~~~\n"
@@ -52,3 +53,17 @@ class Mushroom:
                 f"Edible/Posion: \t{self.isEdible}\n" 
                 "~~~~~~~~~~~~~~~~~~ \n")
         return string
+    
+    def pick_property_at(pos):
+        return self.asArray[pos]
+
+    def pick_random_prop():
+        idx = pick_random_idx(len(self.asArray))
+        return self.asArray[idx]
+
+    def pick_random_idx(set_size):
+        idx = random.randint(0, set_size - 1)
+        print(f"...Choosing from size: {set_size}")
+        print(f"...{idx}")
+        return idx
+
