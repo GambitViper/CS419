@@ -7,6 +7,8 @@
 from os import system, name
 import random
 from mushroom import Mushroom
+from tree import Tree
+from attribute import Attribute
 
 def clear():
     # for windows
@@ -48,7 +50,7 @@ while check_t_incr:
         clear()
         print("--Unnacceptable Value Type--")
 
-def parse_and_create_obj(line):
+def parse_and_create_mushroom(line):
     arr = line.strip().split(' ')
     return Mushroom(arr)
 
@@ -57,7 +59,19 @@ data_set = []
 with open('./input_files/mushroom_data.txt', 'r') as f:
 
     for line in f:
-        data_set.append(parse_and_create_obj(line))
+        data_set.append(parse_and_create_mushroom(line))
+
+def parse_and_create_attribute(line):
+    arr = line.strip().split(':')
+    vals = arr[1].strip().split(' ')
+    return Attribute(arr[0], vals)
+
+attribute_set = []
+
+with open('./input_files/properties.txt', 'r') as f:
+    
+    for line in f:
+        attribute_set.append(parse_and_create_attribute(line))
 
 testing_set = list(data_set)
 training_set = []
@@ -79,3 +93,43 @@ for x in range(t_size):
 print(f"Data_Set len: {len(data_set)}")
 print(f"Traing_Set len: {len(training_set)}")
 print(f"Testing_Set len: {len(testing_set)}")
+
+def decision_tree_learning(examples, attributes, parent_examples):
+    if(not examples):
+        return plurality_value(parent_examples)
+    elif(test_classification_equality(examples)):
+        return examples[0].classification
+    elif(not attributes):
+        return plurality_value(examples)
+    else:
+        a_idx = math_argmax([importance(a) for a in attributes])
+        tree = Tree(a_idx)
+        for v in attributes[a_idx]:
+            exs = find_matched_assignments(examples, v)
+            reduced_attributes = remove_attr(a_idx, attributes)
+            subtree = decision_tree_learning(exs, reduced_attributes, examples)
+            tree.add_child(subtree)
+        return tree  
+
+def find_matched_assignments(examples, value):
+    for ex in examples:
+
+def math_argmax(set_of_data):
+    h_idx = 0
+    for s in range(len(set_of_data) - 1):
+        if(set_of_data[s] > set_of_data[h_idx]):
+            h_idx = s
+    return h_idx
+
+def test_classification_equality(examples):
+    check = False
+    classification = examples[0].classification
+    for ex in examples[1: (len(examples)-1)]:
+        if(ex.classification != classification):
+            check = True
+    return check
+
+# def plurality_value(examples):
+
+# def importance(attribute, examples):
+#     for v in range(len(attribute) - 1):
