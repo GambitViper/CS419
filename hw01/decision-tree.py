@@ -66,6 +66,12 @@ def parse_and_create_attribute(line):
     vals = arr[1].strip().split(' ')
     return Attribute(arr[0], vals)
 
+def parse_attributes(attributes):
+    attr = []
+    for attribute in attributes:
+        attr.append(attribute).values
+    return attr
+
 attribute_set = []
 
 with open('./input_files/properties.txt', 'r') as f:
@@ -99,7 +105,8 @@ for curr_incr in range(t_incr, t_size + 1, t_incr):
         curr_training_set.append(training_set[idx])
     
     # Build a decision tree for the current size of the incrementation on the training_set
-    
+    attributes = parse_attributes(attribute_set)
+    decision_tree = decision_tree_learning(curr_training_set, attributes, [])
 
 
 def decision_tree_learning(examples, attributes, parent_examples):
