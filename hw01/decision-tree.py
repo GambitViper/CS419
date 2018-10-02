@@ -69,7 +69,7 @@ def parse_and_create_attribute(line):
 def parse_attributes(attributes):
     attr = []
     for attribute in attributes:
-        attr.append(attribute).values
+        attr.append(attribute.values)
     return attr
 
 attribute_set = []
@@ -98,18 +98,10 @@ print(f"\nData_Set len: {len(data_set)}")
 print(f"Traing_Set len: {len(training_set)}")
 print(f"Testing_Set len: {len(testing_set)}\n")
 
-for curr_incr in range(t_incr, t_size + 1, t_incr):
-    curr_training_set = []
-    for ct in range(curr_incr):
-        idx = pick_random_idx(len(training_set))
-        curr_training_set.append(training_set[idx])
-    
-    # Build a decision tree for the current size of the incrementation on the training_set
-    attributes = parse_attributes(attribute_set)
-    decision_tree = decision_tree_learning(curr_training_set, attributes, [])
-
-
 def decision_tree_learning(examples, attributes, parent_examples):
+    print(examples)
+    print(attributes)
+    print(parent_examples)
     if(not examples):
         return plurality_value(parent_examples)
     elif(test_classification_equality(examples)):
@@ -153,3 +145,15 @@ def test_classification_equality(examples):
 
 # def importance(attribute, examples):
 #     for v in range(len(attribute) - 1):
+
+for curr_incr in range(t_incr, t_size + 1, t_incr):
+    curr_training_set = []
+    for ct in range(curr_incr):
+        idx = pick_random_idx(len(training_set))
+        curr_training_set.append(training_set[idx])
+    
+    # Build a decision tree for the current size of the incrementation on the training_set
+    attributes = parse_attributes(attribute_set)
+    decision_tree = decision_tree_learning(curr_training_set, attributes, [])
+
+
