@@ -78,21 +78,29 @@ training_set = []
 
 def pick_random_idx(set_size):
     idx = random.randint(0, set_size - 1)
-    print(f"...Choosing from size: {set_size}")
-    print(f"...{idx}")
     return idx
 
+#Adds mushroom data to distinct training and testing sets for strict seperation
 for x in range(t_size):
     idx = pick_random_idx(len(testing_set))
     training_set.append(testing_set[idx])
-    print(f"...Adding {testing_set[idx]} to Training_Set")
+    # print(f"...Adding {testing_set[idx]} to Training_Set")
     testing_set.pop(idx)
-    print(f"...Removing {training_set[x]} from Testing_Set")
-    print(f"{training_set[x].debug_data()}\n...")
+    # print(f"...Removing {training_set[x]} from Testing_Set")
 
-print(f"Data_Set len: {len(data_set)}")
+print(f"\nData_Set len: {len(data_set)}")
 print(f"Traing_Set len: {len(training_set)}")
-print(f"Testing_Set len: {len(testing_set)}")
+print(f"Testing_Set len: {len(testing_set)}\n")
+
+for curr_incr in range(t_incr, t_size + 1, t_incr):
+    curr_training_set = []
+    for ct in range(curr_incr):
+        idx = pick_random_idx(len(training_set))
+        curr_training_set.append(training_set[idx])
+    
+    # Build a decision tree for the current size of the incrementation on the training_set
+    
+
 
 def decision_tree_learning(examples, attributes, parent_examples):
     if(not examples):
@@ -112,7 +120,12 @@ def decision_tree_learning(examples, attributes, parent_examples):
         return tree  
 
 def find_matched_assignments(examples, value):
+    exs = []
     for ex in examples:
+        if(ex.pick_property_at(0) == value):
+            exs.append(ex)
+        
+    return exs
 
 def math_argmax(set_of_data):
     h_idx = 0
