@@ -2,7 +2,7 @@
 # allowing the training set to grow up to 250 members, and 
 # tracking results for learning in increments of 10. 
 # Author: Zachary Baklund
-# Date-Last-Modified: 24/9/18
+# Date-Last-Modified: 3/10/18
 
 from os import system, name
 import math
@@ -66,30 +66,16 @@ def parse_and_create_attribute(line):
     arr = line.strip().split(':')
     vals = arr[1].strip().split(' ')
     return vals
-    # return Attribute(arr[0], vals)
-
-# def parse_attributes(attributes):
-#     attr = []
-#     for attribute in attributes:
-#         attr.append(attribute.values)
-#     return attr
 
 attribute_set = []
-
-# def find_attribute(attribute):
-#     a_idx = 0
-#     for x in range(len(attribute_set) - 1):
-#         if(attribute_set[x].values == attribute):
-#             # print(f"attribute : {attribute} && {attribute_set[x].name}")
-#             a_idx = x
-#     return a_idx
 
 with open('./input_files/properties.txt', 'r') as f:
     
     for line in f:
         attribute_set.append(parse_and_create_attribute(line))
 
-print(attribute_set)
+print(f"\nLoading Property Information from file.")
+print(f"Loading Data from database.\n")
 
 testing_set = list(data_set)
 training_set = []
@@ -102,30 +88,27 @@ def pick_random_idx(set_size):
 for x in range(t_size):
     idx = pick_random_idx(len(testing_set))
     training_set.append(testing_set[idx])
-    # print(f"...Adding {testing_set[idx]} to Training_Set")
     testing_set.pop(idx)
-    # print(f"...Removing {training_set[x]} from Testing_Set")
 
-print(f"\nData_Set len: {len(data_set)}")
-print(f"Traing_Set len: {len(training_set)}")
-print(f"Testing_Set len: {len(testing_set)}\n")
+# print(f"\nData_Set len: {len(data_set)}")
+# print(f"Traing_Set len: {len(training_set)}")
+# print(f"Testing_Set len: {len(testing_set)}\n")
 
 def decision_tree_learning(examples, attributes, parent_examples):
-    # print(f"\n{n} : exs:{examples} attr:{attributes} prnt:{parent_examples}\n")
     if(not examples or len(examples) == 0):
-        print(">>>in if of dst")
+        # print(">>>in if of dst")
         return plurality_value(parent_examples)
     elif(test_classification_equality(examples)):
-        print(">>>in elif #1 of dst")
+        # print(">>>in elif #1 of dst")
         return examples[0].classification()
     elif(not attributes or len(attributes) == 0):
-        print(">>>in elif #2 of dst")
+        # print(">>>in elif #2 of dst")
         return plurality_value(examples)
     else:
-        print(">>>in else of dst")
+        # print(">>>in else of dst")
         attribute = math_argmax([importance(a, examples) for a in attributes])
         tree = Tree(attribute)
-        print(f"pre-for {attribute}")
+        # print(f"pre-for {attribute}")
         attributes.pop(attribute)
         for v in attribute_set[attribute]:
             exs = find_matched_assignments(examples, v, attribute)
@@ -139,7 +122,7 @@ def find_matched_assignments(examples, value, attribute):
     for ex in examples:
         if(ex.pick_property_at(attribute) == value):
             exs.append(ex)
-    print(exs)
+    # print(exs)
     return exs
 
 def math_argmax(set_of_data):
@@ -218,6 +201,7 @@ def importance(attribute, examples):
     # print(f"{attribute}...remainder...{remainder}")
     return (1 - remainder)
 
+print(f"Collecting set of {t_size} training examples.\n")
 for curr_incr in range(t_incr, t_size, t_incr):
     curr_training_set = []
     for ct in range(curr_incr):
@@ -225,7 +209,33 @@ for curr_incr in range(t_incr, t_size, t_incr):
         curr_training_set.append(training_set[idx])
     
     # Build a decision tree for the current size of the incrementation on the training_set
+    # print(f"=== len = {len(curr_training_set)}")
     decision_tree = decision_tree_learning(curr_training_set, list(range(21)), [])
-    print(f"\n ~~~~~ new tree ~~~~~\n")
+
+    correct_decisions = 0
+    total_tested = 0
+    print(f"Running with {curr_incr} examples in training set.")
+    for i in range(len(testing_set) - 1):
+        mushroom = testing_set[i]
+        test_tree = decision_tree
+        while(not test_tree.is_leaf()):
+            attr = test_tree.data
+            mattr = mushroom.pick_property_at(attr)
+            search = attribute_set[attr].index(mattr)
+            test_tree = test_tree.children[search]
+        if(mushroom.classification() == test_tree.data):
+            # print(f"correctness-{mushroom.classification()} =? {test_tree.data}")
+            correct_decisions += 1
+        total_tested += 1
     print(decision_tree)
+    # print(f"-correctness = {correct_decisions / total_tested}")
+    correctness = (correct_decisions / total_tested) * 100
+    pout = '{:.4f}'.format(correctness)
+    outdata = (f"\nGiven current tree, there are {correct_decisions} correct classifications"
+               f"\nout of {len(testing_set)} possible (a success rate of {pout} percent).\n")
+    print(outdata)
+
+            
+        
+
 

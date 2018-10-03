@@ -14,7 +14,7 @@ class Tree(object):
     def __str__(self):
         if(self.is_leaf()):
             return str(self.data)
-        return '{data} children=[{children}]'.format(data=self.data, children=', '.join(map(str, self.children)))
+        return '{data} [{children}]'.format(data=self.data, children=', '.join(map(str, self.children)))
 
     def add_child(self, data):
         new_child = Tree(data, parent=self)
@@ -26,4 +26,15 @@ class Tree(object):
 
     def is_leaf(self):
         return not self.children
+
+    def height(self):
+        if not self.children:  # base case
+            return 1
+        else:                  # recursive case
+            return 1 + max(child.height() for child in self.children)
+
+    def preorder(self):
+        yield self.data
+        for child in self.children:
+            yield from child.preorder()
         
