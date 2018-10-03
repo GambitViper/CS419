@@ -112,35 +112,34 @@ print(f"Testing_Set len: {len(testing_set)}\n")
 
 def decision_tree_learning(examples, attributes, parent_examples):
     # print(f"\n{n} : exs:{examples} attr:{attributes} prnt:{parent_examples}\n")
-    if(not examples):
+    if(not examples or len(examples) == 0):
         print(">>>in if of dst")
         return plurality_value(parent_examples)
     elif(test_classification_equality(examples)):
         print(">>>in elif #1 of dst")
         return examples[0].classification()
-    elif(not attributes):
+    elif(not attributes or len(attributes) == 0):
         print(">>>in elif #2 of dst")
         return plurality_value(examples)
     else:
         print(">>>in else of dst")
         attribute = math_argmax([importance(a, examples) for a in attributes])
         tree = Tree(attribute)
+        print(f"pre-for {attribute}")
+        attributes.pop(attribute)
         for v in attribute_set[attribute]:
             exs = find_matched_assignments(examples, v, attribute)
-            attributes.pop(attribute)
+            # print(f"{attribute_set[attribute]} \n {attributes} \n {attribute}")
             subtree = decision_tree_learning(exs, attributes, examples)
             tree.add_child(subtree)
     return tree
 
 def find_matched_assignments(examples, value, attribute):
-    # print(f"!-f value:{value} {attribute}")
-    
-    # print(f">...{idx}")
     exs = []
     for ex in examples:
         if(ex.pick_property_at(attribute) == value):
             exs.append(ex)
-        
+    print(exs)
     return exs
 
 def math_argmax(set_of_data):
