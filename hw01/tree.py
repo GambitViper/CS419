@@ -17,15 +17,20 @@ class Tree(object):
         return '{data} [{children}]'.format(data=self.data, children=', '.join(map(str, self.children)))
 
     def add_child(self, data):
-        new_child = Tree(data, parent=self)
-        self.children.append(new_child)
+        if isinstance(data, Tree):
+            new_child = data
+            new_child.parent = self
+            self.children.append(new_child)
+        else:
+            new_child = Tree(data, parent=self)
+            self.children.append(new_child)
         return new_child
 
     def is_root(self):
         return self.parent is None
 
     def is_leaf(self):
-        return not self.children
+        return not self.children or len(self.children) == 0
 
     def height(self):
         if not self.children:  # base case
