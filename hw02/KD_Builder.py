@@ -7,6 +7,8 @@
 
 from os import system, name
 import sys
+from KD_Tree import kdbuild, Node
+from KD_Util import distance
 
 def clear():
     # for windows
@@ -29,10 +31,15 @@ dataFeed = []
 with open(dataFile, 'r') as f:
 
     for line in f:
-        dataFeed.append(line.strip('\n\r').split(' '))
+        dataFeed.append(tuple(line.strip('\n\r').split(' ')))
 
 dimensions = dataFeed[0][0]
 data = dataFeed[1:len(dataFeed)]
 print(f"data-set defined with {dimensions} dimensions")
-for d in data:
-    print(d)
+# for d in data:
+    # print(d)
+# print("\n~~~~~~~~~~\n")
+tree = kdbuild(data, minSetSize, dimensions)
+print(tree)
+# print(f"\ndistance between {data[0]} and {data[1]}")
+# print(distance(data[0], data[1]))
