@@ -41,5 +41,9 @@ print(f"data-set defined with {dimensions} dimensions")
 # print("\n~~~~~~~~~~\n")
 tree = kdbuild(data, minSetSize, dimensions)
 print(tree)
-# print(f"\ndistance between {data[0]} and {data[1]}")
-# print(distance(data[0], data[1]))
+
+def kdtree_closest_point(root, point, dimAtt, depth=0, best=None):
+    if root is None:
+        return best
+    
+    dim_split = depth % dimAtt
