@@ -20,9 +20,9 @@ It is run using command-line arguments to setup initial configuration
 ```
 python .\KD_Builder.py .\inputData\2d_small.txt 4
 ```
-Where '.\KD_Builder.py' is the name of the program
-    '.\inputData\2d_small.txt' is the location of the data to cluster on
-    '4' is the minimal-set size to constrain depth of recursive build cases
+Where *.\KD_Builder.py* is the name of the program
+    *.\inputData\2d_small.txt* is the location of the data to cluster on
+    *4* is the minimal-set size to constrain depth of recursive build cases
 
 ## Author
 
