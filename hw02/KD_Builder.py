@@ -3,7 +3,7 @@
 # for some data along with the nearest neighbor in that set.
 # Classifying new data according to median values of tree. 
 # Author: Zachary Baklund
-# Date-Last-Modified: 10/10/18
+# Date-Last-Modified: 16/10/18
 
 from os import system, name
 import sys
@@ -110,7 +110,6 @@ def test_data_prompt():
         #prompt user for name of their data file within current directory
         ui_test_data_file = input("Name of data-file: ")
         test_tree_data = open_to_parse(ui_test_data_file)
-        test_dimensions = test_tree_data[0][0]
         test_data = test_tree_data[1:]
         #traversing the tree and then finding the closest distance
         test_against_kdtree(test_data)
