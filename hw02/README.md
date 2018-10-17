@@ -7,11 +7,7 @@ Classifying new data according to median values of tree.
 
 ### Prerequisites
 
-Python 3.7
-
-```
 [Python 3.7](https://www.python.org/downloads/) - programming language version used
-```
 
 ## Running the tests
 
