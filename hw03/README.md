@@ -1,4 +1,4 @@
-# Nueral Network
+# Neural Network
 
 This is a simple implementation of a utility for building and training neural networks on some data extracted from image files. This code allows the user to specify the structure of one or more multi-layer feed-forward neural networks. It will then train those networks by back-propagation.
 
