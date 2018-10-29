@@ -78,8 +78,13 @@ def fetchFiles(res):
     trainFile = f"trainSet_{res}.dat"
     testFile = f"testSet_{res}.dat"
     # print(f"~Debug~ {res} -> {trainFile}, {testFile}")
-    return [trainFile, testFile]            
+    return [trainFile, testFile]
 
+def promptSaveNetwork():
+    ui_save = input("Save network (Y/N)? ")
+    ui_save.lower()
+    return ui_save
+        
 def train():
     print("")
     resolution = promptRes()
@@ -102,13 +107,19 @@ def train():
     print(f"Testing on {trainingFiles[1]}...")
     
     # Add testing algorithm here
+    
     accuracy = 0
     print(f"Accuracy achieved: {accuracy}%")
 
-    
-    
+    saveNetwork = promptSaveNetwork()
+    if saveNetwork == "y":
+        saveFileName = input("File-name: ")
 
+        print("Saving network...")
 
+        # Add write out to save file
+
+        print(f"Network saved to file: {saveFileName}")
 
 def load():
     print("")

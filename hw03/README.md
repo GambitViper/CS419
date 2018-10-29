@@ -20,7 +20,7 @@ When the program is executed, it will ask the user to choose between three optio
 * (c) The user can quit the program.
 
 ```
-python .\NeuralNetwork.py
+python .\NeuralNet_Driver.py
 ```
 
 ## Author
