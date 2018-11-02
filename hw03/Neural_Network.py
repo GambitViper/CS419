@@ -1,21 +1,51 @@
-class Neural_Network(object):
+import random
+import math
+
+class Perceptron():
+
+    def initRandomWeight(self, num_weights):
+        weights = []
+        for x in range(num_weights):
+            weights.append(random.random())
+        return weights
+
+    def __init__ (self, num_inputs):
+        self.num_weights = num_inputs + 1,
+        self.weights = self.initRandomWeight(num_inputs + 1)
+
+    def g(self, val):
+        epow = math.pow(math.e, (-1 * val))
+        return 1 / (1 + epow)
     
-    def __init__ (self, x, y):
-        self.input      = x
-        self.weights1   = np.random.rand(self.input.shape[1],4) 
-        self.weights2   = np.random.rand(4,1)                 
-        self.y          = y
-        self.output     = np.zeros(self.y.shape)
+    def calcOutput(self, inputs):
+        acc = self.weights[0]
+        for x in range(1, len(self.weights)):
+            acc += self.weights[x] * inputs[x - 1]
+        return self.g(acc)
+        
+    def updateWeights(self, delta, inputs):
+        # w(i,j) <- w(i,j) + α X a(i) X Δ[j]
+        self.weights[0] += delta
+        for x in range(1, len(self.weights)):
+            self.weights[x] += (inputs[x - 1] * delta)
+        
 
-    def feedforward(self):
-        self.layer1 = sigmoid(np.dot(self.input, self.weights1))
-        self.output = sigmoid(np.dot(self.layer1, self.weights2))
+class Layer():
 
-    def backprop(self):
-        # application of the chain rule to find derivative of the loss function with respect to weights2 and weights1
-        d_weights2 = np.dot(self.layer1.T, (2*(self.y - self.output) * sigmoid_derivative(self.output)))
-        d_weights1 = np.dot(self.input.T,  (np.dot(2*(self.y - self.output) * sigmoid_derivative(self.output), self.weights2.T) * sigmoid_derivative(self.layer1)))
+    def initPercpectrons(self, input_len):
+        pass
 
-        # update the weights with the derivative (slope) of the loss function
-        self.weights1 += d_weights1
-        self.weights2 += d_weights2
+    def __init__ (self, input_length, output_length):
+        self.input_length = input_length,
+        self.output_length = output_length
+        self.perceptrons = [] # initPercpectrons(input_length)
+
+class NeuralNetwork(object):
+    
+    def __init__ (self, resolution, num_layers, hidden_layer_sizes):
+        self.resolution = resolution,
+        self.num_layers = num_layers,
+        self.hidden_layer_sizes = hidden_layer_sizes
+
+    def learn(self, examples):
+        pass
