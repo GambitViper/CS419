@@ -5,7 +5,7 @@ class Perceptron():
 
     def initRandomWeight(self, num_weights):
         weights = []
-        for x in range(num_weights):
+        for _ in range(num_weights):
             weights.append(random.random())
         return weights
 
@@ -32,13 +32,18 @@ class Perceptron():
 
 class Layer():
 
-    def initPercpectrons(self, input_len):
-        pass
+    def initPercpectrons(self, layer_size, input_len):
+        perceptrons = []
+        for _ in range(input_len):
+            p = Perceptron(input_len)
+            perceptrons.append(p)
+        return perceptrons
 
-    def __init__ (self, input_length, output_length):
+    def __init__ (self, layer_size, input_length, output_length):
         self.input_length = input_length,
-        self.output_length = output_length
-        self.perceptrons = [] # initPercpectrons(input_length)
+        self.layer_size = layer_size,
+        self.output_length = output_length,
+        self.perceptrons = self.initPercpectrons(layer_size, input_length)
 
 class NeuralNetwork(object):
     
