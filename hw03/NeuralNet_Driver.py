@@ -14,6 +14,8 @@
 
 import math
 import random
+import re
+from Neural_Network import Perceptron, Layer, NeuralNetwork
 
 import Utilities as util
 
@@ -96,9 +98,28 @@ def train():
 
     print("\nInitializing network...")
     
-    # Add constructor for NeuralNetwork
-    
     trainingFiles = fetchFiles(resolution)
+
+    train_vector = []
+    train_class = []
+    try:
+        with open(f"./trainSet_data/{trainingFiles[0]}", 'r') as f:
+            for line in f:
+                if line[0] != '#':
+                    train = re.findall("[(][^)]*[)]", line)
+                    train_x = train[0].strip("()").split(" ")
+                    train_y = train[1].strip("()").split(" ")
+                    train_vector.append(train_x)
+                    train_class.append(train_y)
+                    print(train_x)
+                    print(train_y)
+
+    except IOError:
+        print("Could not read file:", trainingFiles[0])
+
+    input_layer_size = len(train_vector[0])
+    neural_net = NeuralNetwork(resolution, input_layer_size, layer_total, temp_h)
+    print(neural_net.layers)
 
     print(f"Training on {trainingFiles[0]}...")
     
