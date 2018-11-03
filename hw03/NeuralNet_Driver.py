@@ -167,7 +167,16 @@ def train():
         print("Saving network...")
 
         # Add write out to save file
-
+        try:
+            f = open(saveFileName, "w")
+            try:
+                savelines = neural_net.save()
+                f.writelines(savelines)
+            finally:
+                f.close()
+        except IOError:
+            print("Could not write file:", saveFileName)
+        
         print(f"Network saved to file: {saveFileName}\n")
 
 def load():
@@ -176,7 +185,7 @@ def load():
     try:
         with open(network_file, 'r') as f:
             for line in f:
-                pass #do stuff here
+                print(line)
     except IOError:
         print("Could not read file:", network_file)
 

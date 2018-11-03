@@ -30,7 +30,7 @@ class Perceptron():
             self.weights[x] += (inputs[x - 1] * delta)
 
     def __repr__(self):
-        return '\n\t\tPerceptron(Num_Weights= %s)' % (self.num_weights)
+        return '%s' % (self.weights)
         
 
 class Layer():
@@ -57,7 +57,7 @@ class Layer():
         self.perceptrons = self.initPercpectrons(layer_size, input_length, isIn)
 
     def __repr__(self):
-        return '\nLayer(InputLen=%s,\tLayerSize=%s,\tOutputLen=%s, \n\tPerceptrons=%s)' % (self.input_length, self.layer_size, self.output_length, self.perceptrons)
+        return '\n%s' % (self.perceptrons)
 
 class DataWithClass:
 
@@ -154,5 +154,11 @@ class NeuralNetwork(object):
             if expected == actual:
                 accum += 1.0
         return accum
+
+    def save(self):
+        save_lines = []
+        for l in range(self.num_layers):
+            save_lines.append(str(self.layers[l]))
+        return save_lines
 
                         
