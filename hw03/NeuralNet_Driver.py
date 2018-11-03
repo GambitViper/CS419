@@ -15,7 +15,7 @@
 import math
 import random
 import re
-from Neural_Network import Perceptron, Layer, NeuralNetwork
+from Neural_Network import Perceptron, Layer, NeuralNetwork, DataWithClass
 
 import Utilities as util
 
@@ -122,8 +122,14 @@ def train():
     print(neural_net.layers)
 
     print(f"Training on {trainingFiles[0]}...")
-    
+
     # Add training algorithm here
+    training_data = []
+    for x in range(len(train_vector)):
+        d = DataWithClass(train_vector[x], train_class[x])
+        training_data.append(d)
+    print(training_data)
+    neural_net.backProp()
     
     print(f"Testing on {trainingFiles[1]}...")
     
