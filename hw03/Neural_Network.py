@@ -15,7 +15,7 @@ class Perceptron():
 
     def g(self, val):
         epow = math.pow(math.e, (-1 * val))
-        return 1 / (1 + epow)
+        return 1.0 / (1.0 + epow)
     
     def calcOutput(self, inputs):
         acc = self.weights[0]
@@ -52,7 +52,7 @@ class Layer():
         self.isIn = isIn
         self.layer_size = layer_size
         self.output_length = output_length
-        self.output = 0
+        self.output = []
         self.deltas = []
         self.perceptrons = self.initPercpectrons(layer_size, input_length, isIn)
 
@@ -89,7 +89,7 @@ class NeuralNetwork(object):
                 l = Layer(layer_size, layers[x - 1].layer_size, layer_size, "non")
                 layers.append(l)
         return layers
-    
+
     def __init__ (self, resolution, input_layer_size, num_layers, hidden_layer_sizes):
         self.resolution = resolution
         self.num_layers = num_layers
@@ -98,27 +98,61 @@ class NeuralNetwork(object):
 
     def backProp(self, examples):
         # Propagate inputs forward to compute outputs
-        for e in range(len(examples)):
-            self.layers[0].output = examples[e].x
+        epochs = 0
+        while epochs < 100:
+            for e in range(len(examples)):
+                self.layers[0].output = examples[e].x
+                for l in range(1, self.num_layers):
+                    # Calculate layer output from previous layer output
+                    toutputs = []
+                    for p in self.layers[l].perceptrons:
+                        tout = p.calcOutput(self.layers[l - 1].output)
+                        toutputs.append(tout)
+                    self.layers[l].output = toutputs
+                # Propagate deltas backward from output layer to input layer
+                deltas = []
+                oidx = len(self.layers) - 1
+                for d in range(len(self.layers[oidx].output) - 1):
+                    curr_out = self.layers[oidx].output[d]
+                    delt =  (curr_out * (1 - curr_out)) * (examples[e].y[d] - curr_out)
+                    deltas.append(delt)
+                self.layers[oidx].deltas = deltas
+                for k in range(oidx - 1, 0, -1):
+                    middeltas = []
+                    for m in range(len(self.layers[k].perceptrons) - 1):
+                        my_out = self.layers[k].output[m]
+                        gprime = (my_out * (1 - my_out))
+                        acum = 0.0
+                        for i in range(len(self.layers[k + 1].perceptrons)):
+                            acum += self.layers[k + 1].perceptrons[i].weights[m + 1] * self.layers[k + 1].deltas[m]
+                        midelta = gprime * acum
+                        middeltas.append(midelta)                
+                    self.layers[k].deltas = middeltas
+                # Update every weight in the network using deltas
+                for r in range(1, self.num_layers):
+                    inputs = self.layers[r - 1].output
+                    for p in range(len(self.layers[r].perceptrons) - 1):
+                        delta = self.layers[r].deltas[p]
+                        self.layers[r].perceptrons[p].updateWeights(delta, inputs)
+            epochs += 1
+
+    def testNetwork(self, testset):
+        accum = 0.0
+        for t in range(len(testset)):
+            self.layers[0].output = testset[t].x
             for l in range(1, self.num_layers):
-                # Calculate layer output from previous layer output
-                toutputs = []
+                outputs = []
                 for p in self.layers[l].perceptrons:
-                    tout = p.calcOutput(self.layers[l - 1].output)
-                    toutputs.append(tout)
-                self.layers[l].output = toutputs
-            # Propagate deltas backward from output layer to input layer
-            deltas = []
-            oidx = len(self.layers) - 1
-            for d in range(len(self.layers[oidx].output)):
-                prev_out = self.layers[oidx - 1].output[d]
-                curr_out = self.layers[oidx].output[d]
-                delt =  (prev_out * (1 - prev_out)) * (examples[e].y[d] - curr_out)
-                deltas.append(delt)
-            self.layers[oidx].deltas = deltas
-            for k in range(oidx - 1, 0, -1):
-                middeltas = []
-                for m in range(len(self.layers[k].perceptrons)):
-                    my_out = self.layers[k].output[m]
-                    gprime = (my_out * (1 - my_out))
-                    
+                    out = p.calcOutput(self.layers[l - 1].output)
+                    outputs.append(out)
+                self.layers[l].output = outputs
+            out = self.layers[len(self.layers) - 1].output
+            actual = out.index(max(out))
+            test = testset[t].y
+            expected = test.index(max(test))
+            # print(f"Expected={expected}, Got={actual}" )
+            if expected == actual:
+                accum += 1.0
+        return accum
+
+                        
