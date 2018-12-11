@@ -83,7 +83,7 @@ def fetchFiles(res):
     return [trainFile, testFile]
 
 def promptSaveNetwork():
-    ui_save = input("Save network (Y/N)? ")
+    ui_save = input("\nSave network (Y/N)? ")
     ui_save.lower()
     return ui_save
         
@@ -109,17 +109,17 @@ def train():
                     train = re.findall("[(][^)]*[)]", line)
                     train_x = train[0].strip("()").split(" ")
                     train_y = train[1].strip("()").split(" ")
+                    for x in range(len(train_x)):
+                        train_x[x] = float(train_x[x])
+                    for y in range(len(train_y)):
+                        train_y[y] = float(train_y[y])
                     train_vector.append(train_x)
                     train_class.append(train_y)
-                    print(train_x)
-                    print(train_y)
-
     except IOError:
         print("Could not read file:", trainingFiles[0])
 
     input_layer_size = len(train_vector[0])
     neural_net = NeuralNetwork(resolution, input_layer_size, layer_total, temp_h)
-    print(neural_net.layers)
 
     print(f"Training on {trainingFiles[0]}...")
 
@@ -128,14 +128,36 @@ def train():
     for x in range(len(train_vector)):
         d = DataWithClass(train_vector[x], train_class[x])
         training_data.append(d)
-    print(training_data)
-    neural_net.backProp()
+
+    neural_net.backProp(training_data)
     
     print(f"Testing on {trainingFiles[1]}...")
     
     # Add testing algorithm here
-    
-    accuracy = 0
+    test_vector = []
+    test_class = []
+    try:
+        with open(f"./testSet_data/{trainingFiles[1]}", 'r') as f:
+            for line in f:
+                if line[0] != '#':
+                    test = re.findall("[(][^)]*[)]", line)
+                    test_x = test[0].strip("()").split(" ")
+                    test_y = test[1].strip("()").split(" ")
+                    for x in range(len(test_x)):
+                        test_x[x] = float(test_x[x])
+                    for y in range(len(test_y)):
+                        test_y[y] = float(test_y[y])
+                    test_vector.append(test_x)
+                    test_class.append(test_y)
+    except IOError:
+        print("Could not read file:", trainingFiles[0])
+
+    testing_data = []
+    for x in range(len(test_vector)):
+        d = DataWithClass(test_vector[x], test_class[x])
+        testing_data.append(d)
+
+    accuracy = neural_net.testNetwork(testing_data)
     print(f"Accuracy achieved: {accuracy}%")
 
     saveNetwork = promptSaveNetwork()
@@ -145,8 +167,17 @@ def train():
         print("Saving network...")
 
         # Add write out to save file
-
-        print(f"Network saved to file: {saveFileName}")
+        try:
+            f = open(saveFileName, "w")
+            try:
+                savelines = neural_net.save()
+                f.writelines(savelines)
+            finally:
+                f.close()
+        except IOError:
+            print("Could not write file:", saveFileName)
+        
+        print(f"Network saved to file: {saveFileName}\n")
 
 def load():
     print("")
@@ -154,7 +185,7 @@ def load():
     try:
         with open(network_file, 'r') as f:
             for line in f:
-                pass #do stuff here
+                print(line)
     except IOError:
         print("Could not read file:", network_file)
 
