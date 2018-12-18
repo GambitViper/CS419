@@ -9,12 +9,12 @@ Q(s,a) = Q(s,a) + α ( r + γ maxQ(s',a') - Q(s,a) )
 
 This is a slightly modified implementation of a Q-Learning algorithm in which features of the dataset are instead considered representing a computed state action pair. Weights are assigned to the entire learning run so each Q-Learning w/ Features training only modifies two weights. The policy for updating the global weights of this function are assigned as normal weight updates pertaining to the given state and features values.
 
-Q-value is calculated for any state-action pair as follows:
-Q(s,a) = w · f(s,a) = (w1 * f1) + (w2 * f2)
+Q-value is calculated for any state-action pair as follows:  
+Q(s,a) = w · f(s,a) = (w1 * f1) + (w2 * f2)  
 
-After each Q-Learning iteration, we update weights:
-δ = r + γ maxQ(s',a') - Q(s,a)
-∀i, wi = wi + α δ fi(s,a)
+After each Q-Learning iteration, we update weights:  
+δ = r + γ maxQ(s',a') - Q(s,a)  
+∀i, wi = wi + α δ fi(s,a)  
 
 ### Prerequisites
 
