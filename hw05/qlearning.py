@@ -298,9 +298,9 @@ def print_policy(state_actions, weights, isFeature):
         print("")
 
 # ~~~ CSV file writer ~~~
-writer = csv.writer(open("results.csv", 'w'))
-writer.writerow(q_learning)
-writer.writerow(qf_learning)
+# writer = csv.writer(open("results.csv", 'w'))
+# writer.writerow(q_learning)
+# writer.writerow(qf_learning)
 
 print("Q-Learning policy")
 print_policy(state_actions, weights, False)
