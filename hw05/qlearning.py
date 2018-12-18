@@ -1,13 +1,17 @@
 import random, csv
 
-DOWN, RIGHT, UP, LEFT = 0, 1, 2, 3
+LEFT, RIGHT, UP, DOWN = 0, 1, 2, 3
 actions = [DOWN, RIGHT, UP, LEFT]
+
+# Setup for pipe_world reading
 
 lines = [line.rstrip() for line in open('pipe_world.txt')]
 
 state_actions = [[[0 for i in range(4)] 
                      for j in range(len(lines[0]))] 
                      for k in range(len(lines))]
+
+# Translating pipe_world into a reward array
 
 start_x, start_y, goal_x, goal_y = 0, 0, 0, 0
 reward = [[-1 for x in range(len(lines[0]))] for y in range(len(lines))]
@@ -25,10 +29,7 @@ for x in range(len(lines)):
         if check_line[y] == 'M':
             reward[x][y] = -100
 
-goal = tuple([goal_x, goal_y])
-episodes = 10000
-epsilon = 0.9
-alpha = 0.9
+# Loop check conditions for episode ending during training
 
 def reachedGoal(state):
     return state == goal
@@ -39,6 +40,8 @@ def hitMine(state):
 def exceededSteps(steps):
     return steps == len(reward[0]) * len(reward)
 
+# Regular Q-Learning functions
+
 def maxQ_index(state):
     x, y = state[0], state[1]
     maxq = 0
@@ -47,12 +50,18 @@ def maxQ_index(state):
             maxq = a
     return maxq
 
+def maxQ(state):
+    x, y = state[0], state[1]
+    return state_actions[x][y][maxQ_index(state)]
+
 def chooseAction(state, epsilon):
     rand = random.random()
     if rand < epsilon:
         return random.choice(actions)
     else:
         return maxQ_index(state)
+
+# Q-Learning with feature functions
 
 def bestAction_features(state, weights):
     bestVal = weights_cross_features(state, weights, 0)
@@ -80,6 +89,8 @@ def weights_cross_features(state, weights, action):
 def maxQ_features(state, weights):
     action = bestAction_features(state, weights)
     return weights_cross_features(state, weights, action)
+
+# State transformation function for taking actions
 
 def isAllowed(state):
     x, y = state[0], state[1]
@@ -109,6 +120,8 @@ def left(state):
     newstate[1] = state[1] - 1
     return newstate
 
+# Action taking function with no slippage to consider features
+
 def takeActionNoSlip(state, action):
     newstate = list(state)
     if action == UP:
@@ -123,6 +136,8 @@ def takeActionNoSlip(state, action):
         return tuple(newstate)
     else:
         return state
+
+# Action taking function with slippage used for evaluating both policies
 
 def takeAction(state, action):
     newstate = list(state)
@@ -161,9 +176,7 @@ def takeAction(state, action):
     else:
         return state
 
-def maxQ(state):
-    x, y = state[0], state[1]
-    return state_actions[x][y][maxQ_index(state)]
+# Implementation of regular q-learning
 
 q_learning = []
 
@@ -180,6 +193,11 @@ def test_qlearning():
             steps += 1
     return total_reward / 50
 
+goal = tuple([goal_x, goal_y])
+episodes = 10000
+epsilon = 0.9
+alpha = 0.9
+
 for episode in range(episodes):
     s = tuple([start_x, start_y])
     steps = 0
@@ -194,13 +212,7 @@ for episode in range(episodes):
     alpha = 0.9/(episode/1000 + 1)
     epsilon = 0.9/(episode/200 + 1)
 
-goal = tuple([goal_x, goal_y])
-episodes = 10000
-epsilon = 0.9
-alpha = 0.9
-
-w1 , w2 = 0.0, 0.0
-weights = tuple([w1, w2])
+# Implementation of Feature based q-learning
 
 qf_learning = []
 
@@ -217,6 +229,8 @@ def test_qlearning_features():
             steps += 1
     return total_reward / 50
 
+# Feature finding functions
+
 def feature1(state):
     x, y = state[0], state[1]
     return ( abs(x - goal_x) + abs(y - goal_y) ) / ( goal_x + goal_y )
@@ -231,6 +245,14 @@ def feature2(state, action):
         return inverseDistRight
     elif action == UP or action == DOWN:
         return min(inverseDistLeft, inverseDistRight)
+
+goal = tuple([goal_x, goal_y])
+episodes = 10000
+epsilon = 0.9
+alpha = 0.9
+
+w1 , w2 = 0.0, 0.0
+weights = tuple([w1, w2])
 
 for episode in range(episodes):
     s = tuple([start_x, start_y])
@@ -250,27 +272,9 @@ for episode in range(episodes):
     alpha = 0.9/(episode/1000 + 1)
     epsilon = 0.9/(episode/200 + 1)
 
-def print_features(weights):
-    for x in range(len(reward)):
-        for y in range(len(reward[0])):
-            state = tuple([x,y])
-            if reward[x][y] == -100:
-                print("M",end='')
-            elif state == goal:
-                print("G",end='')
-            else:
-                action = bestAction_features(state, weights)
-                if action == UP:
-                    print("U",end='')
-                elif action == DOWN:
-                    print("D",end='')
-                elif action == LEFT:
-                    print("L",end='')
-                elif action == RIGHT:
-                    print("R",end='')
-        print("")
+# Dual purpose policy printer
 
-def print_policy(state_actions):
+def print_policy(state_actions, weights, isFeature):
     for x in range(len(state_actions)):
         for y in range(len(state_actions[0])):
             state = tuple([x,y])
@@ -279,7 +283,10 @@ def print_policy(state_actions):
             elif state == goal:
                 print("G",end='')
             else:
-                action = maxQ_index(state)
+                if isFeature:
+                    action = bestAction_features(state, weights)
+                else:
+                    action = maxQ_index(state)
                 if action == UP:
                     print("U",end='')
                 elif action == DOWN:
@@ -290,11 +297,14 @@ def print_policy(state_actions):
                     print("R",end='')
         print("")
 
-# writer = csv.writer(open("results.csv", 'w'))
-# writer.writerow(q_learning)
-# writer.writerow(qf_learning)
+# ~~~ CSV file writer ~~~
+writer = csv.writer(open("results.csv", 'w'))
+writer.writerow(q_learning)
+writer.writerow(qf_learning)
 
-print_policy(state_actions)
-print(q_learning)
-print_features(weights)
-print(qf_learning)
+print("Q-Learning policy")
+print_policy(state_actions, weights, False)
+# print(q_learning)
+print("Q-Learning with Features policy")
+print_policy(state_actions, weights, True)
+# print(qf_learning)
