@@ -5,6 +5,60 @@ the data tested was extracted from a pipe_world.txt file. Q-learning is an algor
 
 Q(s,a) = Q(s,a) + α ( r + γ maxQ(s',a') - Q(s,a) )
 
+Q-Learning policy  
+MULRLDDRULUDLULLLLDDRDRDUURURDLLRDUUM  
+MRLRDLLLDLULLLDLLDDDRDDRLLLURRRULDDLM  
+MRULRLDLDUUDDDLDLDDDDDRDRRRLDDDRRDLLM  
+MRUURDULLUDLDDDUDDDDDLDUDDRURDLDUDRLM  
+MRLDDDDDUULLRDDLDDDDDDUDURDLDRDDDRULM  
+MRURLDDRDDLDLDRDDDDDDDDUDDDRDDLLUDLLM  
+MRDLDLDLDRDLDDDDDDDDDDRRRDDUDDDDLLLLM  
+MRULDLDRUDULUDLLDDDDDDDDDLLRLRURDRLLM  
+MRLLLDDLDDUDUDDDDDDDDDDDDDLRDUDDDLLLM  
+MRDLDLDDDUDDLDRDDDDDDDURDDRDDDLDURLLM  
+MRLRLLDLLLLRDRDDDDDDDDRULDDDLDRDDDDLM  
+MRDDRLDLDRDDDRDDDDDDDDLRDDDLDDRDDDDLM  
+MRULULRDDDDDDDDDDDDDDDDDDDDDRDDDLRDLM  
+MRDDLRDLDDDRLUDDDDDDDDLDRDDURLRDDLRLM  
+MRLLLDLLLRDRDDDDDDDDDDDLLDDDUDRUDDDLM  
+MRDRRDUDLDLDDDDDDDDDDDDLDDDLDDUDLRLLM  
+MRDDLDDLDRDLDDDDDDDDDDDDDDLLRRDUDDLLM  
+MRURDDDRULDDDDDDDDDDDDDLDDRLRLDDLRDLM  
+MRURUDUDDDLRDDDDDDDDDDDDDDDDDDRRUDLLM  
+MRDUDDDLLDRDDDDDDDDDDDDDDDDRRLDDDRDLM  
+MRLLDLRURDLRDDDDDDDDDDDDDLDDDDDLDLLLM  
+MRDRDDLDDDLDDDDDDDDDDDDDDDUDLLDRURDLM  
+MRRDDDDURRRDRRDDDDDDDDDDLDDDRDDDDRDLM  
+MRDDDLDDDUDDUDDDDDDDDDDDDDUDRLLDDRDLM  
+MRDLDDDDDLDDUDDDDDDDDDDDDDDDDLDRRDULM  
+MRDDDDDDDDDDDDDDDDDDDDDDDDDDDUDDLDDLM  
+MRDDDDLDDLDDRDDDDDDDDDDLDDRDDDDDDDLDM  
+MRDRRDLRUDDRDDDDDDDDDDDDDDDDDDDUDRDLM  
+MRDDRRDDDDDRDDDDDDDDDDLDDLDDDLDLDDLLM  
+MRDDDUDLDLDDDDDDDDDDDDDDDDDDDUDLLUDLM  
+MRUDDRLDDDDDDDDDDDDDDDDLDLLDDDDDDRDLM  
+MRULRDDDLRRRDDDDDDDDDDDDDLRLLDDLRRDLM  
+MRDDDDDRDDRRDRDDDDDDDDDLLDUDDDDDDRDLM  
+MRDDLDDRUDDDDRDRDDDDDDDDDDDDDDDRLDDLM  
+MRURRDRDRDRDDRDDDDDDDDDLDDDLRLDDDDRLM  
+MRRDDLUDDLDDDRDDDDDDDDDLDDDLDDDDDDDLM  
+MRDLDUDDDRDDDRRDDDDDDLDDDDDDDDDRRDLLM  
+MRDDDUDDDDDDDDRDDDDDDDDDLDDDLDDDUDRUM  
+MRDLDDDDDRRDDRRDDDDDDDDLLLDLLDDDDDRLM  
+MRUDDDDDDDRDDDDDDDDDDDLDDDLDLLDLDDDLM  
+MRDRDDDDDDRRRRDDDDDDDDDDDLDDLLLDDRDLM  
+MRRLDLDRDDRRDDRRDDDDDDDDDDDDLDLDDURLM  
+MRDLDRDDRDLRDRRDDDDDDDLLDDLDLDLDDLDLM  
+MRDDDDRDDDRDDDDDDDDDLDDDLLLDLDLLLDDUM  
+MRRURDRRRDDDDDDRDDDDDLLDLLLLDRDLDUULM  
+MRLDDDDRRDDRRDRDDDDDDDDLLLLLDLLDLDRLM  
+MRDDLRRRDRDDRDDDDDDDDDLLLLDLLLLLDUULM  
+MRDURRRRRRRRRDRRRDDDLDLDDLDLLLLDUDULM  
+MRULURRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MDURRRRRRRRRRRRRRRGLLLLLLLLLLLLLLLUDM  
+  
+This policy is arrived to by 10,000 episodes of Q-Learning iterations. With basic Q-Learning it makes sense that some areas of the policy aren't optimal as the algoritm relies implicitly on randomness of choosen actions to explore the context. So some areas of the policy have actions that don't make much sense but when you consider that the Q-Learning algorithm is inheritly relient on the randomness of the agent. So, not all areas of the pipe world are explored. You can see that near the bottom the down actions taper off and the right and left side of the goal pulls the agent back to the direction of the goal.
+
 # Q-Learning w/ Features
 
 This is a slightly modified implementation of a Q-Learning algorithm in which features of the dataset are instead considered representing a computed state action pair. Weights are assigned to the entire learning run so each Q-Learning w/ Features training only modifies two weights. The policy for updating the global weights of this function are assigned as normal weight updates pertaining to the given state and features values.
@@ -14,7 +68,61 @@ Q(s,a) = w · f(s,a) = (w1 * f1) + (w2 * f2)
 
 After each Q-Learning iteration, we update weights:  
 δ = r + γ maxQ(s',a') - Q(s,a)  
-∀i, wi = wi + α δ fi(s,a)  
+∀i, wi = wi + α δ fi(s,a)
+
+Q-Learning with Features policy  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRDLLLLLLLLLLLLLLLLLM  
+MRRRRRRRRRRRRRRRRRGLLLLLLLLLLLLLLLLLM  
+  
+This is the policy learned after 10,000 episodes of learning iteration with the feature based Q-Learning algorithm. Policy learned by feature based Q-Learning makes sense since getting close to a mine is a very detrimental action to the agent. So when feature 2 is checked for the inverse distance to the nearest mine in either direction of the action or the minimum of the two when the action is up / down. So, the Q-Learning with features policy learned to correct for agent slippage by making all non middle policies move the agent back to the center downward path.
 
 ### Prerequisites
 
@@ -31,6 +139,10 @@ python .\qlearning.py
 Here is the data result of policy selected charted for every 100 episodes of learning, tested 50 times in that learned policy and averaged across those 50 tests for both Q-learning and Q-learning with Features.
 
 ![Learning Policy Graph](learning_policy_graph.PNG)
+
+As you can see since the basic Q-Learning relies heavily on individual decisions and randomness to assign value to updating its policy it starts at a much lower accuracy to a higher acheivable reward average compared to the Q-Learning with Features policy reward evaulation. This can be explained by the fact that Q-Learning doesn't update universal weights for the whole policy as the feature based version does. The policy that is generated by Q-Learning is also noticeably more noisy in nature. As it is a conglomeration of downs in the middle area along with groups of lefts on the right side of the middle and groups of rights on the left side of the middle. Testing this policy as it gets generated we can understand is affected a lot more by the slippage of the agent in our pipe world.
+
+The other technique we used gets closer to optimal policy almost on the first test of its policy. This makes sense since the feature-based learning version of Q-Learning has two weights that are modified throughout the course of learning iterations based on calculated features on each of the states in consideration with actions. Also the calculation of feature values omit the possibility of slippage of the agent. So we get a more accurate ideal situation look ahead even if the actual action taken for the next iteration does happen to slip. The fact that the weights are universal in the learning process means that learning the best action for one move of a state action pair helps us learn about the rest of our world-context simultaneously. This is reflected in our graph as the evaluation of our learned policy is nearly at the limit of both algorithms after only 100 episodes.
 
 ## Author
 
