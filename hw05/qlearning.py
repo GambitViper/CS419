@@ -1,7 +1,7 @@
-import random
+import random, csv
 
-DOWN, LEFT, RIGHT, UP = 0, 1, 2, 3
-actions = [DOWN, LEFT, RIGHT, UP]
+DOWN, RIGHT, UP, LEFT = 0, 1, 2, 3
+actions = [DOWN, RIGHT, UP, LEFT]
 
 lines = [line.rstrip() for line in open('pipe_world.txt')]
 
@@ -52,43 +52,105 @@ def chooseAction(state, epsilon):
     if rand < epsilon:
         return random.choice(actions)
     else:
-        return maxQ_index(state)        
+        return maxQ_index(state)
+
+def bestAction_features(state, weights):
+    bestVal = weights_cross_features(state, weights, 0)
+    bestAction = 0
+    for action in range(1,4):
+        checkVal = weights_cross_features(state, weights, action)
+        if checkVal > bestVal:
+            bestVal = checkVal
+            bestAction = action
+    return bestAction
+
+def chooseAction_feature(state, epsilon, weights):
+    rand = random.random()
+    if rand < epsilon:
+        return random.choice(actions)
+    else:
+        return bestAction_features(state, weights)
+        
+def weights_cross_features(state, weights, action):
+    w1, w2 = weights[0], weights[1]
+    f1 = feature1(takeActionNoSlip(state, action))
+    f2 = feature2(state, action)
+    return ( w1 * f1 ) + ( w2 * f2 )
+
+def maxQ_features(state, weights):
+    action = bestAction_features(state, weights)
+    return weights_cross_features(state, weights, action)
 
 def isAllowed(state):
     x, y = state[0], state[1]
     return 0 <= x < len(reward) and 0 <= y < len(reward[0])
+
+def up(state):
+    newstate = list(state)
+    newstate[0] = state[0] - 1
+    newstate[1] = state[1]
+    return newstate
+
+def down(state):
+    newstate = list(state)
+    newstate[0] = state[0] + 1
+    newstate[1] = state[1]
+    return newstate
+
+def right(state):
+    newstate = list(state)
+    newstate[0] = state[0]
+    newstate[1] = state[1] + 1
+    return newstate
+
+def left(state):
+    newstate = list(state)
+    newstate[0] = state[0]
+    newstate[1] = state[1] - 1
+    return newstate
+
+def takeActionNoSlip(state, action):
+    newstate = list(state)
+    if action == UP:
+        newstate = up(state)
+    elif action == DOWN:
+        newstate = down(state)
+    elif action == LEFT:
+        newstate = left(state)
+    elif action == RIGHT:
+        newstate = right(state)
+    if isAllowed(newstate):
+        return tuple(newstate)
+    else:
+        return state
 
 def takeAction(state, action):
     newstate = list(state)
     rand = random.random()
     slip = rand <= 0.2
     if action == UP:
-        newstate[0] = state[0] - 1
-        newstate[1] = state[1]
+        newstate = up(state)
         if slip:
             if random.random() < 0.5:
                 newstate[1] = state[1] - 1
             else:
                 newstate[1] = state[1] + 1
     elif action == DOWN:
-        newstate[0] = state[0] + 1
-        newstate[1] = state[1]
+        newstate = down(state)
         if slip:
             if random.random() < 0.5:
                 newstate[1] = state[1] - 1
             else:
                 newstate[1] = state[1] + 1
     elif action == LEFT:
-        newstate[0] = state[0]
-        newstate[1] = state[1] - 1
+        newstate = left(state)
         if slip:
             if random.random() < 0.5:
                 newstate[0] = state[0] - 1
             else:
                 newstate[0] = state[0] + 1
     elif action == RIGHT:
-        newstate[0] = state[0]
-        newstate[1] = state[1] + 1
+        newstate = right(state)
         if slip:
             if random.random() < 0.5:
                 newstate[0] = state[0] - 1
@@ -103,9 +165,26 @@ def maxQ(state):
     x, y = state[0], state[1]
     return state_actions[x][y][maxQ_index(state)]
 
+q_learning = []
+
+def test_qlearning():
+    total_reward = 0
+    for _ in range(50):
+        s = tuple([start_x, start_y])
+        steps = 0
+        while not reachedGoal(s) and not hitMine(s) and not exceededSteps(steps):
+            action = maxQ_index(s)
+            sn = takeAction(s, action)
+            total_reward += reward[sn[0]][sn[1]]
+            s = sn
+            steps += 1
+    return total_reward / 50
+
 for episode in range(episodes):
     s = tuple([start_x, start_y])
     steps = 0
+    if episode != 0 and episode % 100 == 0:
+        q_learning.append(test_qlearning())
     while not reachedGoal(s) and not hitMine(s) and not exceededSteps(steps):
         action = chooseAction(s, epsilon)
         sn = takeAction(s, action)
@@ -114,6 +193,82 @@ for episode in range(episodes):
         steps += 1
     alpha = 0.9/(episode/1000 + 1)
     epsilon = 0.9/(episode/200 + 1)
+
+goal = tuple([goal_x, goal_y])
+episodes = 10000
+epsilon = 0.9
+alpha = 0.9
+
+w1 , w2 = 0.0, 0.0
+weights = tuple([w1, w2])
+
+qf_learning = []
+
+def test_qlearning_features():
+    total_reward = 0
+    for _ in range(50):
+        s = tuple([start_x, start_y])
+        steps = 0
+        while not reachedGoal(s) and not hitMine(s) and not exceededSteps(steps):
+            action = bestAction_features(s, weights)
+            sn = takeAction(s, action)
+            total_reward += reward[sn[0]][sn[1]]
+            s = sn
+            steps += 1
+    return total_reward / 50
+
+def feature1(state):
+    x, y = state[0], state[1]
+    return ( abs(x - goal_x) + abs(y - goal_y) ) / ( goal_x + goal_y )
+
+def feature2(state, action):
+    y = state[1]
+    inverseDistLeft = 1 / (y + 1)
+    inverseDistRight = 1 / (len(reward[0]) - y)
+    if action == LEFT:
+        return inverseDistLeft
+    elif action == RIGHT:
+        return inverseDistRight
+    elif action == UP or action == DOWN:
+        return min(inverseDistLeft, inverseDistRight)
+
+for episode in range(episodes):
+    s = tuple([start_x, start_y])
+    steps = 0
+    if episode != 0 and episode % 100 == 0:
+        qf_learning.append(test_qlearning_features())
+    while not reachedGoal(s) and not hitMine(s) and not exceededSteps(steps):
+        action = chooseAction_feature(s, epsilon, weights)
+        sn = takeAction(s, action)
+        newWeights = list(weights)
+        delta = reward[sn[0]][sn[1]] + (0.9) * maxQ_features(sn, weights) - weights_cross_features(s, weights, action)
+        newWeights[0] += alpha * delta * feature1(sn)
+        newWeights[1] += alpha * delta * feature2(s, action)
+        weights = tuple(newWeights)
+        s = sn
+        steps += 1
+    alpha = 0.9/(episode/1000 + 1)
+    epsilon = 0.9/(episode/200 + 1)
+
+def print_features(weights):
+    for x in range(len(reward)):
+        for y in range(len(reward[0])):
+            state = tuple([x,y])
+            if reward[x][y] == -100:
+                print("M",end='')
+            elif state == goal:
+                print("G",end='')
+            else:
+                action = bestAction_features(state, weights)
+                if action == UP:
+                    print("U",end='')
+                elif action == DOWN:
+                    print("D",end='')
+                elif action == LEFT:
+                    print("L",end='')
+                elif action == RIGHT:
+                    print("R",end='')
+        print("")
 
 def print_policy(state_actions):
     for x in range(len(state_actions)):
@@ -135,5 +290,11 @@ def print_policy(state_actions):
                     print("R",end='')
         print("")
 
+# writer = csv.writer(open("results.csv", 'w'))
+# writer.writerow(q_learning)
+# writer.writerow(qf_learning)
+
 print_policy(state_actions)
-print(state_actions)
+print(q_learning)
+print_features(weights)
+print(qf_learning)
